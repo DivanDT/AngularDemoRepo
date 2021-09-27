@@ -1,4 +1,4 @@
-export enum period{
+/*export enum period{
     year,
     month,
     date,
@@ -19,9 +19,6 @@ export class salaryInfo{
     salaryCurrency!: currency;
     salaryStart!: Date;
     salaryEnd!: Date;
-    /**
-     *
-     */
     constructor(companyName:string, userPeriod:period,salaryAmount:number,salaryCurrency:currency, salaryStart:Date) {
         this.companyName = companyName;
         this.userPeriod = userPeriod;
@@ -59,4 +56,4 @@ export function mockData(){
     salaryMock[3] = new salaryInfo('KPMG',period.month,30000,currency.ZAR,new Date("2020-02-01"))
     salaryMock[4] = new salaryInfo('Capitec',period.year,200000,currency.ZAR,new Date("2020-04-06"))
     return salaryMock;
-}
+    */
