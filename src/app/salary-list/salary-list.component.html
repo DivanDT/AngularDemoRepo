@@ -1,0 +1,33 @@
+<div class='card'>
+    <div class='card-header'>
+      {{pageTitle}}
+    </div>
+    <div class='card-body'>
+      
+      <div class='table-responsive'>
+        <table class='table'
+               *ngIf='testSalary.length'>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>User Id</th>
+              <th>Company Name</th>
+              <th>Time Period</th>
+              <th>Salary </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor='let salary of testSalary'>        
+              <td>{{ salary.id }}</td>
+              <td>{{ salary.userId }}</td>
+              <td>{{ salary.companyName }}</td>
+              <td>{{ salary.timePeriod }}</td>
+              <td>{{ salary.salaryAmount }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+    </div>
+  
+  </div>
