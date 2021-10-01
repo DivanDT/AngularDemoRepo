@@ -1,4 +1,4 @@
-<div class='card'>
+<div class='card' *ngIf="user">
     <div class='card-header'>
       {{pageTitle}}
     </div>
@@ -11,31 +11,16 @@
             <tr>
               <th>Company Name</th>
               <th>Time Period</th>
-              <th>Start Date</th>
-              <th>Salary </th>
+              <th>Amount</th>
+              <th>Date</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor='let salary of testSalary'>        
+            <tr *ngFor='let salary of user.salaries'>        
               <td>{{ salary.companyName }}</td>
-
-
-              
-              <td *ngIf='salary.timePeriod=="PD"'>Per Day</td>
-              <td *ngIf='salary.timePeriod=="PM"'>Per Month</td>
-              <td *ngIf='salary.timePeriod=="PY"'>Per Year</td>
-
-              <td *ngIf='salary.timePeriod=="PD"'>{{salary.startDate}} </td>
-              <td *ngIf='salary.timePeriod=="PM"'>{{salary.startDate}} </td>
-              <td *ngIf='salary.timePeriod=="PY"'>{{salary.startDate}} </td>
-              
-              
-              
-
-
-              
-              
-              <td>{{ salary.salaryAmount | currency:salary.currencyCode:'symbol':'1.2-2'}}</td>
+              <td>{{ salary.timePeriod | timePeriodPipe}}</td>             
+              <td>{{ salary.salaryAmount | currency:salary.currencyCode:'symbol-narrow'}}</td>
+              <td>{{ getDateDisplayString(salary)}}</td>
             </tr>
           </tbody>
         </table>
@@ -43,4 +28,4 @@
   
     </div>
   
-  </div>
+</div>

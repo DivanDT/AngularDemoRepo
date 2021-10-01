@@ -28,7 +28,7 @@ export class Salary {
         let taxMonth = new TaxMonth();
         taxMonth.month = 'Jan';
         taxMonth.year = '2021';
-        result.push(this.getTestSalary(id,userId,'KPMG',12335.43, 'R',TimePeriod.PerMonth,undefined,taxMonth,undefined))
+        result.push(this.getTestSalary(id,userId,'KPMG',12335.43, 'ZAR',TimePeriod.PerMonth,undefined,taxMonth,undefined))
         
         //tax date salary
         id++;
@@ -42,13 +42,13 @@ export class Salary {
         id++;
         let taxYear = new TaxYear();
         taxYear.year = '1819';
-        result.push(this.getTestSalary(id,userId,'Inplenion',200000, 'R',TimePeriod.PerTaxYear,taxYear,undefined,undefined))
+        result.push(this.getTestSalary(id,userId,'Inplenion',200000, 'ZAR',TimePeriod.PerTaxYear,taxYear,undefined,undefined))
         
         //tax month salary
         let taxM = new TaxMonth();
         taxM.month = 'Feb';
         taxM.year = '1920';
-        result.push(this.getTestSalary(id,userId,'Galaxy',25000.99, 'R',TimePeriod.PerMonth,undefined,taxM,undefined))
+        result.push(this.getTestSalary(id,userId,'Galaxy',25000.99, 'ZAR',TimePeriod.PerMonth,undefined,taxM,undefined))
         
         //tax date salary
         id++;
@@ -76,7 +76,7 @@ export class Salary {
         id++;
         let tY = new TaxYear();
         tY.year = '1314';
-        result.push(this.getTestSalary(id,userId,'My test company 4',12335.43, 'R',TimePeriod.PerTaxYear,tY,undefined,undefined))
+        result.push(this.getTestSalary(id,userId,'My test company 4',12335.43, 'ZAR',TimePeriod.PerTaxYear,tY,undefined,undefined))
         
         return result    
     }
@@ -100,40 +100,6 @@ export class Salary {
         result.salaryAmount = salaryAmount;
         result.currencyCode = currencyCode;
         result.timePeriod = timePeriod;
-        //startdate
-        //doing in try catch blocks for if value not defined
-
-        //per year
-        if(result.timePeriod == "PY"){
-            try {result.startDate = "6 Apr " + taxYear!.year.substring(0,2)               
-            } catch (error) {
-                result.startDate = "period undefined"
-            }
-        }
-
-        //per month
-        if(result.timePeriod == "PM"){
-            try {result.startDate = "01 "+ taxMonth!.month + " " + taxMonth!.year.substring(0,2)            
-            } catch (error) {
-                result.startDate = "period undefined"
-            }            
-        }
-
-        //per day
-        if(result.timePeriod == "PD"){
-            try {
-            result.startDate = taxDate!.day + " " + taxDate!.month + " " + taxDate!.year.substring(0,2)
-            } catch (error) {
-                result.startDate = "period undefined"
-            }
-        }
-
-
-        //enddate
-        
-
-
-
         return result
     }
     
