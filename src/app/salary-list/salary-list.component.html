@@ -14,18 +14,34 @@
                 <th>Time Period</th>
                 <th>Amount</th>
                 <th>Date</th>
+                <th>Details</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor='let salary of user.salaries'>        
-                <td>{{salary.companyName }}</td>
+              <tr *ngFor='let salary of user.salaries' (click)='onDetails(salary.id)'>   
+                
+                <td >{{salary.companyName}}</td>
                 <td>{{salary.timePeriod | timePeriodPipe}}</td>             
                 <td>{{salary.salaryAmount | currency:salary.currencyCode:'symbol-narrow'}}</td>
                 <td>{{getDateDisplayString(salary)}}</td>
+                <td>
+                  <div *ngIf='salary.showDetails'>
+                    <app-salary-detail [salary] = 'salary'
+                    (deleteClicked)='onDelete($event)'>
+                    
+                  </app-salary-detail>
+                  
+                  </div>
+                  
+                </td>
+               
                 
+
               </tr>
+              
             </tbody>
           </table>
+          
         </div>
     
       </div>

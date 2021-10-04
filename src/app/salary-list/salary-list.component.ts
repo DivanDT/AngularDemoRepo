@@ -11,8 +11,9 @@ import { User } from '../models/user.model';
   styleUrls: ['./salary-list.component.css']
 })
 export class SalaryListComponent implements OnInit {
+  
   pageTitle: string = 'Salary List';
-
+  showDetails: boolean[] = [];
   user: User;
   testSalary: Salary[] = Salary.getTestData(22)
   
@@ -22,7 +23,9 @@ export class SalaryListComponent implements OnInit {
 
     this.user = this.getTestUser();
   }
-
+  onDetails(showNum: number): void{
+    this.user.salaries[showNum-1].showDetails = !this.user.salaries[showNum-1].showDetails;
+  }
   private getTestUser(): User{
     let user = new User();
     user.id = 1;
@@ -43,6 +46,15 @@ export class SalaryListComponent implements OnInit {
 
     return 'ERROR'
   }
-  
+  onDelete(deleteId: number): void{
+    let newSalaries: Salary[] = [];
+    for (let index = 0; index < this.user.salaries.length; index++) {
+      const element = this.user.salaries[index];
+      if(element.id!=deleteId){
+        newSalaries.push(element)
+      }
+    }
+    this.user.salaries=newSalaries
+  }
 
 }

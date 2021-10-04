@@ -10,7 +10,7 @@ export class Salary {
     timePeriod: TimePeriod;
     salaryAmount: number;
     currencyCode: string;
-
+    showDetails: boolean;
     //timePeriodActual: string;
     
     taxDate?: TaxDate;
@@ -43,6 +43,7 @@ export class Salary {
         result.push(this.getTestSalary(id,userId,'Inplenion',200000, 'R',TimePeriod.PerTaxYear,taxYear,undefined,undefined))
         
         //tax month salary
+        id++;
         let taxM = new TaxMonth();
         taxM.month = 'Feb';
         taxM.year = '1920';
@@ -101,6 +102,7 @@ export class Salary {
         result.taxYear = taxYear;
         result.taxMonth = taxMonth;
         result.taxDate = taxDate;
+        result.showDetails = false;
         return result
     }
     
