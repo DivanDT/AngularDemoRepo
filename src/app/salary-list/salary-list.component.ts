@@ -14,12 +14,12 @@ export class SalaryListComponent implements OnInit {
   pageTitle: string = 'Salary List';
 
   user: User;
-
   testSalary: Salary[] = Salary.getTestData(22)
   
   constructor() { }
 
   ngOnInit(): void {
+
     this.user = this.getTestUser();
   }
 
@@ -31,8 +31,8 @@ export class SalaryListComponent implements OnInit {
   }
 
   getDateDisplayString(salary: Salary): string{
-    if(salary.timePeriod=='PY'){
-      return salary.taxYear?.year + ' Tax Year';
+    if(salary.taxYear){
+      return salary.taxYear.year + ' Tax Year';
     }
     if(salary.taxMonth){
       return salary.taxMonth.month + '-' + salary.taxMonth.year;
@@ -43,4 +43,6 @@ export class SalaryListComponent implements OnInit {
 
     return 'ERROR'
   }
+  }
+
 }
