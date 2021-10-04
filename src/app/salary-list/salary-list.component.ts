@@ -43,6 +43,6 @@ export class SalaryListComponent implements OnInit {
 
     return 'ERROR'
   }
-  }
+  
 
 }
