@@ -1,31 +1,34 @@
-<div class='card' *ngIf="user">
-    <div class='card-header'>
-      {{pageTitle}}
-    </div>
-    <div class='card-body'>
-      
-      <div class='table-responsive'>
-        <table class='table'
-               *ngIf='testSalary.length'>
-          <thead>
-            <tr>
-              <th>Company Name</th>
-              <th>Time Period</th>
-              <th>Amount</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor='let salary of user.salaries'>        
-              <td>{{ salary.companyName }}</td>
-              <td>{{ salary.timePeriod | timePeriodPipe}}</td>             
-              <td>{{ salary.salaryAmount | currency:salary.currencyCode:'symbol-narrow'}}</td>
-              <td>{{ getDateDisplayString(salary)}}</td>
-            </tr>
-          </tbody>
-        </table>
+<div *ngIf="user">
+  <div class='card' >
+      <div class='card-header'>
+        {{pageTitle}}
       </div>
-  
-    </div>
-  
+      <div class='card-body'>
+        
+        <div class='table-responsive'>
+          <table class='table'
+                *ngIf='testSalary.length'>
+            <thead>
+              <tr>
+                <th>Company Name</th>
+                <th>Time Period</th>
+                <th>Amount</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let salary of user.salaries'>        
+                <td>{{salary.companyName }}</td>
+                <td>{{salary.timePeriod | timePeriodPipe}}</td>             
+                <td>{{salary.salaryAmount | currency:salary.currencyCode:'symbol-narrow'}}</td>
+                <td>{{getDateDisplayString(salary)}}</td>
+                
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    
+      </div>
+    
+  </div>
 </div>

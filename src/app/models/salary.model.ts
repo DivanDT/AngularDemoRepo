@@ -16,7 +16,7 @@ export class Salary {
     taxDate?: TaxDate;
     taxMonth?: TaxMonth;
     taxYear?: TaxYear;
-    startDate: string;
+    //startDate: string;
 
     static getTestData(userId: number): Salary[] {
         let result: Salary[] = [];
@@ -100,6 +100,11 @@ export class Salary {
         result.salaryAmount = salaryAmount;
         result.currencyCode = currencyCode;
         result.timePeriod = timePeriod;
+        result.taxYear = taxYear;
+        result.taxMonth = taxMonth;
+
+        result.taxDate = taxDate;
+        
         return result
     }
     

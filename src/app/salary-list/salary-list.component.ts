@@ -31,8 +31,8 @@ export class SalaryListComponent implements OnInit {
   }
 
   getDateDisplayString(salary: Salary): string{
-    if(salary.taxYear){
-      return salary.taxYear.year + ' Tax Year'
+    if(salary.timePeriod=='PY'){
+      return salary.taxYear?.year + ' Tax Year';
     }
     if(salary.taxMonth){
       return salary.taxMonth.month + '-' + salary.taxMonth.year;

@@ -6,15 +6,16 @@ import { AppComponent } from './app.component';
 import { SalaryListComponent } from './salary-list/salary-list.component';
 import { TimePeriodPipe } from './pipes/time-period.pipe';
 
+
 @NgModule({
   declarations: [
     AppComponent,
     SalaryListComponent,
-    TimePeriodPipe
+    TimePeriodPipe,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
