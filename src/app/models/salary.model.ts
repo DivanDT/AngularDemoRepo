@@ -16,8 +16,6 @@ export class Salary {
     taxDate?: TaxDate;
     taxMonth?: TaxMonth;
     taxYear?: TaxYear;
-    startDate: string;
-
     static getTestData(userId: number): Salary[] {
         let result: Salary[] = [];
 
@@ -100,40 +98,9 @@ export class Salary {
         result.salaryAmount = salaryAmount;
         result.currencyCode = currencyCode;
         result.timePeriod = timePeriod;
-        //startdate
-        //doing in try catch blocks for if value not defined
-
-        //per year
-        if(result.timePeriod == "PY"){
-            try {result.startDate = "6 Apr " + taxYear!.year.substring(0,2)               
-            } catch (error) {
-                result.startDate = "period undefined"
-            }
-        }
-
-        //per month
-        if(result.timePeriod == "PM"){
-            try {result.startDate = "01 "+ taxMonth!.month + " " + taxMonth!.year.substring(0,2)            
-            } catch (error) {
-                result.startDate = "period undefined"
-            }            
-        }
-
-        //per day
-        if(result.timePeriod == "PD"){
-            try {
-            result.startDate = taxDate!.day + " " + taxDate!.month + " " + taxDate!.year.substring(0,2)
-            } catch (error) {
-                result.startDate = "period undefined"
-            }
-        }
-
-
-        //enddate
-        
-
-
-
+        result.taxYear = taxYear;
+        result.taxMonth = taxMonth;
+        result.taxDate = taxDate;
         return result
     }
     

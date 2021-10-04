@@ -5,14 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SalaryListComponent } from './salary-list/salary-list.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
-    SalaryListComponent
+    SalaryListComponent,
+    TimePeriodPipe,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
