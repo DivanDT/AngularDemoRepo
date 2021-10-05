@@ -14,18 +14,22 @@
                 <th>Time Period</th>
                 <th>Amount</th>
                 <th>Date</th>
+                <th>Details</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor='let salary of user.salaries'>   
-                <td>
-                  <a (click)='showDetails(salary)'>
-                    {{salary.companyName}}
-                  </a>
-                </td>
+                <td>{{salary.companyName}}</td>
                 <td>{{salary.timePeriod | timePeriodPipe}}</td>             
                 <td style="text-align:left">{{salary.salaryAmount | currency:salary.currencyCode:'symbol-narrow'}}</td>
                 <td>{{salary | dateDisplay }}</td>  
+                <td>
+                  <button 
+                  (click)='showDetails(salary)' 
+                  class='btn btn-outline-secondary btn-sm' 
+                  style='height:auto'>
+                    {{salary.companyName}} Details
+                  </button></td>
               </tr>
               
             </tbody>
@@ -37,9 +41,6 @@
             [salary]="salaryDetails" 
             (deleteClicked) = "onSalaryDelete($event)">
           </app-salary-detail>
-        </div>
-        <div *ngIf='!salaryDetails'>
-          <h5 >Click on Company Name for details</h5>
         </div>
       </div>
     

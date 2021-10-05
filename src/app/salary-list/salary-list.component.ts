@@ -19,7 +19,10 @@ export class SalaryListComponent implements OnInit {
     this.user = this.getTestUser();
   }
   showDetails(salary: Salary): void{
-    this.salaryDetails = salary;
+    if(this.salaryDetails?.id == salary.id){
+      this.salaryDetails = undefined;
+    }else this.salaryDetails = salary;
+    
   }
   private getTestUser(): User{
     let user = new User();
