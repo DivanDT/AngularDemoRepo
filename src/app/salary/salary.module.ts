@@ -5,13 +5,16 @@ import { SalaryDetailComponent } from '../salary-detail/salary-detail.component'
 import { TimePeriodPipe } from '../pipes/time-period.pipe';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { DateDisplayPipe } from '../pipes/date-display.pipe';
+
 
 
 @NgModule({
   declarations: [
     SalaryListComponent,
     SalaryDetailComponent,
-    TimePeriodPipe
+    TimePeriodPipe,
+    DateDisplayPipe
 
   ],
   imports: [

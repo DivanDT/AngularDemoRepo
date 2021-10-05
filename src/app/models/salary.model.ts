@@ -33,7 +33,7 @@ export class Salary {
         let taxDate = new TaxDate();
         taxDate.day = '17';
         taxDate.month = 'Apr';
-        taxDate.year = '1718';
+        taxDate.year = '2018';
         result.push(this.getTestSalary(id,userId,'Bitcube',100, 'GBP',TimePeriod.PerDay,undefined,undefined,taxDate))
         
         //tax year salary
@@ -46,7 +46,7 @@ export class Salary {
         id++;
         let taxM = new TaxMonth();
         taxM.month = 'Feb';
-        taxM.year = '1920';
+        taxM.year = '2020';
         result.push(this.getTestSalary(id,userId,'Galaxy',25000.99, 'R',TimePeriod.PerMonth,undefined,taxM,undefined))
         
         //tax date salary
@@ -54,7 +54,7 @@ export class Salary {
         let taxD = new TaxDate();
         taxD.day = '1';
         taxD.month = 'Des';
-        taxD.year = '1920';
+        taxD.year = '2019';
         result.push(this.getTestSalary(id,userId,'Samsung',20.43, 'GBP',TimePeriod.PerDay,undefined,undefined,taxD))
         
         //tax year salary
@@ -68,7 +68,7 @@ export class Salary {
         let tD = new TaxDate();
         tD.day = '28';
         tD.month = 'Sep';
-        tD.year = '2021';
+        tD.year = '2013';
         result.push(this.getTestSalary(id,userId,'My test company 3',12335.43, 'GBP',TimePeriod.PerDay,undefined,undefined,tD))
         
         //tax year salary
