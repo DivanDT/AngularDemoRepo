@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
 import { WelcomeComponent } from './home/welcome/welcome.component';
 import { SalaryModule } from './salary/salary.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SalaryModule } from './salary/salary.module';
       {path: '',redirectTo: 'welcome',pathMatch: 'full'} ,
       {path: '**',redirectTo: 'welcome',pathMatch: 'full'} 
     ]),
-    SalaryModule
+    SalaryModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
