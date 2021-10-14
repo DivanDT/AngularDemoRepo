@@ -3,11 +3,25 @@
       <div class='card-header'>
         {{pageTitle}}
       </div>
+      
       <div class='card-body'>
-        
+        <mat-form-field appearance='fill'>
+          <mat-label>Search</mat-label>
+          <input matInput placeholder="Ex. Bitcube" [(ngModel)]='listSearch' />    
+        </mat-form-field>
+        <P></P>
+        <mat-form-field appearance="fill">
+          <mat-label>Time Period</mat-label>
+          <mat-select matNativeControl [(ngModel)]="filterPeriod" name="period">
+            <mat-option [value]='undefined' >None</mat-option>
+            <mat-option *ngFor="let p of allPeriods" [value]="p">
+              {{p | timePeriodPipe}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
         <div class='table-responsive'>
           <table class='table'
-                *ngIf='testSalary.length'>
+                *ngIf='user.salaries.length'>
             <thead>
               <tr>
                 <th>Company Name</th>
@@ -18,7 +32,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor='let salary of user.salaries'>   
+              <tr *ngFor='let salary of filteredSalary'>   
                 <td>{{salary.companyName}}</td>
                 <td>{{salary.timePeriod | timePeriodPipe}}</td>             
                 <td style="text-align:left">{{salary.salaryAmount | currency:salary.currencyCode:'symbol-narrow'}}</td>
