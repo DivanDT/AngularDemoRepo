@@ -9,7 +9,9 @@ import { DateDisplayPipe } from '../pipes/date-display.pipe';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInputModule} from '@angular/material/input';
-
+import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { HttpClientModule } from '@angular/common/http';
+import { salarydata } from './salarydata';
 
 
 @NgModule({
@@ -18,14 +20,16 @@ import {MatInputModule} from '@angular/material/input';
     SalaryDetailComponent,
     TimePeriodPipe,
     DateDisplayPipe
-
   ],
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule,
+    InMemoryWebApiModule,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
+    InMemoryWebApiModule.forRoot(salarydata, { dataEncapsulation: false }),
     RouterModule.forChild([
       {path: 'salary', component: SalaryListComponent},
       {path: 'salary/:id', component: SalaryDetailComponent},

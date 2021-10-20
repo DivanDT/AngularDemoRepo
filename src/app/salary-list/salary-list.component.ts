@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Salary } from '../models/salary.model';
 import { TimePeriod } from '../models/time-period.model';
 import { User } from '../models/user.model';
+import { SalaryService } from '../salary/salary.service';
 
 @Component({
   selector: 'app-salary-list',
@@ -10,12 +11,12 @@ import { User } from '../models/user.model';
   styleUrls: ['./salary-list.component.css']
 })
 export class SalaryListComponent implements OnInit {
-  
+  errorMessage = '';
   pageTitle: string = 'Salary List';
   user: User;
   salaryDetails: Salary | undefined;
   allPeriods = [TimePeriod.PerDay,TimePeriod.PerMonth,TimePeriod.PerTaxYear];
-  filteredSalary: Salary[] = [];
+  filteredSalary: Salary[];
   
   //Search parameter
   private _listSearch: string = '';
@@ -50,21 +51,26 @@ export class SalaryListComponent implements OnInit {
       return this.filteredSalary.filter((sal: Salary) =>
       sal.timePeriod.includes(filterPeriod))
     }
-   
   }
+  
   performSearch(filterBy: string): Salary[] {
     filterBy = filterBy.toLocaleLowerCase();
     this.filteredSalary = this.user.salaries.filter((sal: Salary) =>
       sal.companyName.toLocaleLowerCase().includes(filterBy));
     return this.performPeriodFilter(this.filterPeriod)
   }
-  constructor() { }
+  constructor(private salaryService: SalaryService) { }
 
   ngOnInit(): void {
-    
-    this.user = this.getTestUser();
+    this.user = new User;
+    this.salaryService.getSalaries().subscribe({
+      next: salaries => {
+        this.user.salaries = salaries;
+        this.filteredSalary = this.user.salaries;
+      },
+      error: err => this.errorMessage = err
+    });
     this.listSearch = '';
-    this.filteredSalary = this.user.salaries;
   }
 
 
@@ -73,12 +79,6 @@ export class SalaryListComponent implements OnInit {
       this.salaryDetails = undefined;
     }else this.salaryDetails = salary;
     
-  }
-  private getTestUser(): User{
-    let user = new User();
-    user.id = 1;
-    user.salaries = Salary.getTestData(1);
-    return user;
   }
 
   onSalaryDelete(deleteId: number): void{
