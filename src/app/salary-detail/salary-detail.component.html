@@ -17,8 +17,9 @@
             </button>
             <button class='btn btn-outline-secondary'
                     style='width:80px'
-                    (click)='onEdit()'>
-                <i class='fa fa-chevron-left'></i> Edit
+                    (click)='onEdit()'
+                    [routerLink]="['/salary',salary.id,'edit']">
+                <i class='fa fa-chevron-left' ></i> Edit
             </button>
         </div>
     </div>

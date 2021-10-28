@@ -82,7 +82,12 @@ export class SalaryListComponent implements OnInit {
   }
 
   onSalaryDelete(deleteId: number): void{
-    this.user.salaries = this.user.salaries.filter(x => x.id !== deleteId);
-    this.salaryDetails = undefined;
+    if (confirm(`Really delete the salary: ${this.salaryDetails?.companyName}?`)) {
+      this.salaryService.deleteSalary(deleteId)
+        .subscribe({
+          next: () => {this.salaryDetails = undefined, this.ngOnInit()},
+          error: err => this.errorMessage = err
+        });
+      }
   }
 }

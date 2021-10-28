@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { WelcomeComponent } from './home/welcome/welcome.component';
 import { SalaryModule } from './salary/salary.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SalaryeditComponent } from './salaryedit/salaryedit.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RouterModule.forRoot([
       {path: 'welcome',component: WelcomeComponent},
       {path: '',redirectTo: 'welcome',pathMatch: 'full'} ,
-      {path: '**',redirectTo: 'welcome',pathMatch: 'full'} 
+      {path: '**',redirectTo: 'welcome',pathMatch: 'full'}
     ]),
     SalaryModule,
     BrowserAnimationsModule

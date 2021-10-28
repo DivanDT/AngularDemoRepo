@@ -1,0 +1,195 @@
+<div class="card">
+    <div class="card-header">
+      {{pageTitle}}
+    </div>
+  
+    <div class="card-body">
+        <form 
+        (ngSubmit)="saveSalary()"
+        [formGroup]="editForm">
+            <div class="form-group row mb-2">
+              <label class="col-md-2 col-form-label"
+                     for="companyNameId">Company Name</label>
+              <div class="col-md-8">
+                <input class="form-control"
+                       id="companyNameId"
+                       type="text"
+                       placeholder="Company Name (required)"
+                       formControlName="companyName"
+                       [ngClass]="{'is-invalid': displayMessage.companyName }" />
+                <span class="invalid-feedback">
+                  {{displayMessage.companyName}}
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group row mb-2">
+              <label class="col-md-2 col-form-label"
+                     for="timePeriodId">Time Period</label>
+              <div class="col-md-2">
+                <mat-form-field appearance="fill">
+                <mat-select formControlName="timePeriod">
+                  <mat-option>--</mat-option>
+                  <mat-option *ngFor="let period of tp" [value]="period">
+                    {{period | timePeriodPipe}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+                <span class="invalid-feedback">
+                  {{displayMessage.timePeriod}}
+                </span>
+              </div>
+            </div>
+
+
+            <!--perday-->
+            <div  *ngIf='this.editForm.get("timePeriod")?.value=="PD"'  class="form-group row mb-2">
+              <label class="col-md-2 col-form-label"
+                     for="timePeriodId">Select Date</label>
+              <div class="col-md-3">
+                <mat-form-field formGroupName="taxDate" appearance="fill">
+                  <!--day-->
+                  <mat-label>Day</mat-label>
+                  <mat-select formControlName="day">
+                    <mat-option *ngFor="let day of dayPeriods[0]" [value]="day">
+                      {{day}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-md-3">
+                  <!--month-->
+                <mat-form-field formGroupName="taxDate" appearance="fill">
+                  <mat-label>Month</mat-label>
+                  <mat-select formControlName="month">
+                    <mat-option *ngFor="let day of dayPeriods[1]" [value]="day">
+                      {{day}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+                  <!--year-->
+              <div class="col-md-3">
+                <mat-form-field formGroupName="taxDate" appearance="fill">
+                  <mat-label>Year</mat-label>
+                  <mat-select formControlName="year">
+                    <mat-option *ngFor="let day of dayPeriods[2]" [value]="day">
+                      {{day}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                
+              </div>
+            </div>
+
+            <!--permonth-->
+            <div *ngIf='this.editForm.get("timePeriod")?.value=="PM"' class="form-group row mb-2">
+              <label class="col-md-2 col-form-label"
+                     for="timePeriodId">Select Month</label>
+              <div class="col-md-2" >
+                <mat-form-field formGroupName="taxMonth" appearance="fill" >
+                  <mat-label>Select Month</mat-label>
+                <mat-select formControlName="tempMonth" >
+                  <mat-option *ngFor="let month of monthPeriods" [value]="month.substr(10,6)">
+                    {{month}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+                
+              </div>
+            </div>
+
+            <!--peryear-->
+            <div *ngIf='this.editForm.get("timePeriod")?.value=="PY"' class="form-group row mb-2">
+              <label class="col-md-2 col-form-label"
+                     for="timePeriodId">Select Year</label>
+              <div class="col-md-2" >
+                <mat-form-field formGroupName="taxYear" appearance="fill" >
+                  <mat-label>Select Year</mat-label>
+                <mat-select  formControlName="year" >
+                  <mat-option *ngFor="let year of yearPeriods" [value]="year.substr(12,2)+year.substr(17,2)">
+                    {{year}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+                
+              </div>
+            </div>
+
+
+
+
+            <div class="form-group row mb-2">
+              <label class="col-md-2 col-form-label"
+                     for="salaryAmountId">Salary Amount</label>
+              <div class="col-md-8">
+                <input class="form-control"
+                       id="salaryAmountId"
+                       type="text"
+                       placeholder="Salary Amount (required)"
+                       formControlName="salaryAmount"
+                       [ngClass]="{'is-invalid': displayMessage.salaryAmount }" />
+                <span class="invalid-feedback">
+                  {{displayMessage.salaryAmount}}
+                </span>
+              </div>
+            </div>
+
+            <div class="form-group row mb-2">
+              <label class="col-md-2 col-form-label"
+                     for="salaryAmountId">Currency Code</label>
+              <div class="col-md-8">
+                <mat-form-field appearance="fill" >
+                  <mat-select  formControlName="currencyCode" >
+                    <mat-option>--</mat-option>
+                    <mat-option *ngFor="let curr of currency" [value]="curr">
+                      {{curr}}
+                    </mat-option>
+                    
+                  </mat-select>
+                  <mat-error>{{displayMessage.currencyCode}}</mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="form-group row mb-2">
+              <div class="offset-md-2 col-md-4">
+                
+                <button class="btn btn-primary mr-3"
+                        style="width:80px;"
+                        type="submit"
+                        [title]="editForm.valid ? 'Save your entered data' : 'Disabled until the form data is valid'"
+                        [disabled]="!editForm.valid">
+                  Save
+                </button>
+                <button class="btn btn-outline-secondary mr-3"
+                        style="width:80px;"
+                        type="button"
+                        title="Cancel your edits"
+                        [routerLink]="['/salary']">
+                  Cancel
+                </button>
+
+                <button class="btn btn-outline-warning"
+                        style="width:80px"
+                        type="button"
+                        title="Delete this product"
+                        (click)="deleteSalary()">
+                  Delete
+                </button>
+              </div>
+            </div>
+            <!--br>Valid: {{ editForm.valid }}
+            <br>Value: {{ editForm.value | json }}
+            <div class="alert alert-danger"
+              *ngIf="errorMessage">{{errorMessage}}
+            </div-->
+
+        
+        </form>
+    </div>
+
+    
+
+</div>
+

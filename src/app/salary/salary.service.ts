@@ -12,7 +12,7 @@ import { TimePeriod } from '../models/time-period.model';
 export class SalaryService {
 
   constructor(private http: HttpClient) { }
-  private salaryUrl = 'api/Salaries/'
+  private salaryUrl = 'api/Salaries'
 
   
   getSalaries(): Observable<Salary[]> {
@@ -55,10 +55,10 @@ export class SalaryService {
       );
   }
 
-  updateProduct(salary: Salary): Observable<Salary> {
+  updateSalary(salary: Salary): Observable<Salary> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.salaryUrl}/${salary.id}`;
-    return this.http.put<Salary>(url, salary, { headers })
+      return this.http.put<Salary>(url, salary, { headers })
       .pipe(
         tap(() => console.log('updateProduct: ' + salary.id)),
         // Return the product on an update
