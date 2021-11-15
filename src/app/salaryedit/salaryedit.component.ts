@@ -1,19 +1,18 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChildren, ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray, AbstractControl, FormControlName, FormBuilder } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Salary } from '../models/salary.model';
 import { TimePeriod } from '../models/time-period.model';
 import { SalaryService } from '../salary/salary.service';
-import { TimePeriodPipe } from '../pipes/time-period.pipe';
-import { typeWithParameters } from '@angular/compiler/src/render3/util';
 @Component({
   selector: 'app-salaryedit',
   templateUrl: './salaryedit.component.html',
   styleUrls: ['./salaryedit.component.css']
 })
-export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SalaryeditComponent implements OnInit, AfterViewInit {
   @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
   editForm: FormGroup;
   salary: Salary;
@@ -34,7 +33,6 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
   
   constructor(private fb: FormBuilder,private route: ActivatedRoute, private salaryService: SalaryService, private router: Router) {
     // Defines all of the validation messages for the form.
-    // These could instead be retrieved from a file or database.
     this.validationMessages = {
       companyName: {
         required: 'Company Name Required',
@@ -42,7 +40,16 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
         maxlength: 'Company Name Too Long'
     },
     timePeriod: {
-        required: 'Required',
+        required: 'Time Period Required',
+    },
+    taxDate: {
+      required: 'Day Required'
+    },
+    tempMonth: {
+        required: 'Month Required'
+    },
+    taxYear: {
+      required: 'Year Required'
     },
     salaryAmount: {
         required: 'Salary Required',
@@ -56,8 +63,7 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dayPeriods = this.setDayPeriods();
     this.monthPeriods = this.setMonthPeriods();
     this.yearPeriods = this.setYearPeriods();
-    // Define an instance of the validator for use with this form,
-    // passing in this form's set of validation messages.
+
   }
 
   
@@ -76,15 +82,15 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
       ),
       taxMonth: this.fb.group({
         month: '',
-        year: '',
-        tempMonth: '',}
+        year: '',}
       ),
+      tempMonth: ['',Validators.required],
       taxDate: this.fb.group({
         year: '',
         month: '',
         day: ''}
       ),
-      salaryAmount: ['',  [Validators.required,
+      salaryAmount: [0,  [Validators.required,
                           Validators.min(0.01),
                           Validators.max(1000000)]],
       currencyCode: ['',Validators.required]
@@ -95,11 +101,15 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sub = this.route.paramMap.subscribe(
       params => {
         const id = Number(params.get('id'));
+        this.id = id;
         this.getSalary(id);
+        
       }
     );
-    
-    this.editForm.get("taxMonth")?.get('tempMonth')?.valueChanges.subscribe(x => {
+
+   
+    //set month and day from 1 dropdown
+    this.editForm.get('tempMonth')?.valueChanges.subscribe(x => {
       this.editForm.patchValue({
         taxMonth:{
           month: x?.substr(0,3),
@@ -107,13 +117,34 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
     })
-  }
 
+    //sets correct number of days for each month
+    this.editForm.get('taxDate')?.get('month').valueChanges.subscribe(x => {
+      this.setDaysInMonth(this.editForm.get('taxDate')?.get('year').value,x);
+    })
+    
+  }
+  setDaysInMonth(year: string, month: string){
+    if(year==undefined){
+      //fixes day cannot be chosen if year is not chosen
+      year = '2021'
+    }
+    //use currentDay so date is not lost
+    let currentDay = this.editForm.get('taxDate').get('day').value
+    //get month index from month name
+    let monthNum = this.dayPeriods[1].findIndex(x => x == month)
+    //get number of days in specific month using getDate()
+    let numDays = new Date(parseInt(year),monthNum+1,0).getDate();
+    let days: string[] = []
+    for (numDays; numDays > 0; numDays--) {
+      days.push(numDays.toString())
+    }
+    this.dayPeriods[0] = days
+    this.editForm.get('taxDate').get('day').setValue(currentDay)
+  }
   
 
-  ngOnDestroy(): void{
-    this.sub.unsubscribe();
-  }
+  
 
   ngAfterViewInit(): void{
     // Watch for the blur event from any input element on the form.
@@ -129,10 +160,8 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
       this.displayMessage = this.processMessages(this.editForm);
     });
   }
-
-  updateSalary(){
-    this.editForm.get('companyName')?.valid
-  }
+  
+ 
 
   
   getSalary(id: number): void {
@@ -142,6 +171,7 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
         next: (sal: Salary) => this.displaySalary(sal),
         error: err => this.errorMessage = err
       });
+
   }
 
   displaySalary(salary: Salary): void {
@@ -150,13 +180,18 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.salary = salary;
     
+
     if (this.salary.id === 0) {
       this.pageTitle = 'Add Salary';
     } else {
       this.pageTitle = `Edit Salary: ${this.salary.companyName}`;
     }
-    
-
+    let tempMonthValue: string;
+    if(this.salary.timePeriod=='PM'){
+      tempMonthValue = this.salary.taxMonth?.month+'-'+this.salary.taxMonth?.year.substr(2,2)
+    }else {
+      tempMonthValue = undefined
+    }
     // Update the data on the form
     
     this.editForm.patchValue({
@@ -168,16 +203,17 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
         year: this.salary.taxYear?.year,
       },
       taxMonth: {
-        tempMonth: this.salary.taxMonth?.month+'-'+this.salary.taxMonth?.year,
         month: this.salary.taxMonth?.month,
         year: this.salary.taxMonth?.year
       },
+      tempMonth: tempMonthValue,
       taxDate: {
         day: this.salary.taxDate?.day,
         month: this.salary.taxDate?.month,
         year: this.salary.taxDate?.year
       }
     });
+    this.doTimeVal(this.editForm.get('timePeriod').value)
   }
 
   saveSalary(): void {
@@ -275,20 +311,24 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   setDayPeriods(): string[][]{
     let allPeriods: string[][];
-    let days: string[] = []
-    for (let index = 31; index > 0; index--) {
-      days.push(index.toString())
-    }
+    
     
     let months: string[] = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
     let years: string[] = []
     for (let index = 2022; index >= 2010; index--){
       years.push(index.toString());
     }
+
+    let days: string[] = []
+    
+    for (let index = 31; index > 0; index--) {
+      days.push(index.toString())
+    }
+
     allPeriods = [days,months,years]
     return allPeriods;
   }
-
+  
   setMonthPeriods(): string[]{
     let monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
     let monthPeriods: string[] = [];
@@ -316,8 +356,58 @@ export class SalaryeditComponent implements OnInit, AfterViewInit, OnDestroy {
     return yearPeriods;
   }
 
+  doTimeVal(tp: string) {
+    
+    //Per Day Validation
+    if (tp=='PD') {
+      this.editForm.get('taxDate')?.get('day')?.setValidators([Validators.required])
+      this.editForm.get('taxDate')?.get('month')?.setValidators([Validators.required])
+      this.editForm.get('taxDate')?.get('year')?.setValidators([Validators.required])
+      this.editForm.get('taxDate')?.updateValueAndValidity();
+      
+      
+      this.editForm.get('tempMonth')?.clearValidators();
+      this.editForm.get('tempMonth')?.updateValueAndValidity();
+
+      this.editForm.get('taxYear')?.get('year')?.clearValidators();
+      this.editForm.get('taxYear')?.get('year')?.updateValueAndValidity();
+    }
+    //Per Month Validation
+    if (tp=='PM') {
+      
+
+      this.editForm.get('tempMonth').setValidators([Validators.required])
+     
+
+      this.editForm.get('taxDate')?.get('day')?.clearValidators()
+      this.editForm.get('taxDate')?.get('day')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('month')?.clearValidators()
+      this.editForm.get('taxDate')?.get('month')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('year')?.clearValidators()
+      this.editForm.get('taxDate')?.get('year')?.updateValueAndValidity();
+
+      this.editForm.get('taxYear')?.get('year')?.clearValidators()
+      this.editForm.get('taxYear')?.get('year')?.updateValueAndValidity();
+    }
+    //Per Day Validation
+    if (tp=='PY') {
+      this.editForm.get('taxYear')?.get('year')?.setValidators([Validators.required])
+      this.editForm.get('taxYear')?.updateValueAndValidity();
+      
+      this.editForm.get('tempMonth')?.clearValidators();
+      this.editForm.get('tempMonth')?.updateValueAndValidity();
+
+      this.editForm.get('taxDate')?.get('day')?.clearValidators()
+      this.editForm.get('taxDate')?.get('day')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('month')?.clearValidators()
+      this.editForm.get('taxDate')?.get('month')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('year')?.clearValidators()
+      this.editForm.get('taxDate')?.get('year')?.updateValueAndValidity();
+    }
 
 
 
 
+    this.editForm.updateValueAndValidity();
+  }
 }

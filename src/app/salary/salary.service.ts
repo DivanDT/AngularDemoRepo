@@ -37,7 +37,7 @@ export class SalaryService {
 
   createSalary(salary: Salary): Observable<Salary> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    salary.id = 0;
+    salary.id = null;
     return this.http.post<Salary>(this.salaryUrl, salary, { headers })
       .pipe(
         tap(data => console.log('createSalary: ' + JSON.stringify(data))),

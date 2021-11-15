@@ -28,16 +28,14 @@
                      for="timePeriodId">Time Period</label>
               <div class="col-md-2">
                 <mat-form-field appearance="fill">
-                <mat-select formControlName="timePeriod">
+                <mat-select formControlName="timePeriod" (valueChange)="doTimeVal($event)">
                   <mat-option>--</mat-option>
                   <mat-option *ngFor="let period of tp" [value]="period">
                     {{period | timePeriodPipe}}
                   </mat-option>
                 </mat-select>
+                <mat-error>{{displayMessage.timePeriod}}</mat-error>
               </mat-form-field>
-                <span class="invalid-feedback">
-                  {{displayMessage.timePeriod}}
-                </span>
               </div>
             </div>
 
@@ -45,7 +43,7 @@
             <!--perday-->
             <div  *ngIf='this.editForm.get("timePeriod")?.value=="PD"'  class="form-group row mb-2">
               <label class="col-md-2 col-form-label"
-                     for="timePeriodId">Select Date</label>
+                     >Select Date</label>
               <div class="col-md-3">
                 <mat-form-field formGroupName="taxDate" appearance="fill">
                   <!--day-->
@@ -55,6 +53,7 @@
                       {{day}}
                     </mat-option>
                   </mat-select>
+                  <mat-error>{{displayMessage.taxDate}}</mat-error>
                 </mat-form-field>
               </div>
               <div class="col-md-3">
@@ -62,10 +61,11 @@
                 <mat-form-field formGroupName="taxDate" appearance="fill">
                   <mat-label>Month</mat-label>
                   <mat-select formControlName="month">
-                    <mat-option *ngFor="let day of dayPeriods[1]" [value]="day">
-                      {{day}}
+                    <mat-option *ngFor="let month of dayPeriods[1]" [value]="month">
+                      {{month}}
                     </mat-option>
                   </mat-select>
+                  <mat-error>{{displayMessage.taxDate}}</mat-error>
                 </mat-form-field>
               </div>
                   <!--year-->
@@ -73,10 +73,12 @@
                 <mat-form-field formGroupName="taxDate" appearance="fill">
                   <mat-label>Year</mat-label>
                   <mat-select formControlName="year">
-                    <mat-option *ngFor="let day of dayPeriods[2]" [value]="day">
-                      {{day}}
+                    <mat-option *ngFor="let year of dayPeriods[2]" [value]="year">
+                      {{year}}
                     </mat-option>
                   </mat-select>
+                  <mat-error>{{displayMessage.taxDate}}</mat-error>
+
                 </mat-form-field>
                 
               </div>
@@ -85,15 +87,16 @@
             <!--permonth-->
             <div *ngIf='this.editForm.get("timePeriod")?.value=="PM"' class="form-group row mb-2">
               <label class="col-md-2 col-form-label"
-                     for="timePeriodId">Select Month</label>
+                     >Select Month</label>
               <div class="col-md-2" >
-                <mat-form-field formGroupName="taxMonth" appearance="fill" >
+                <mat-form-field appearance="fill" >
                   <mat-label>Select Month</mat-label>
                 <mat-select formControlName="tempMonth" >
                   <mat-option *ngFor="let month of monthPeriods" [value]="month.substr(10,6)">
                     {{month}}
                   </mat-option>
                 </mat-select>
+                <mat-error>{{displayMessage.tempMonth}}</mat-error>
               </mat-form-field>
                 
               </div>
@@ -102,7 +105,7 @@
             <!--peryear-->
             <div *ngIf='this.editForm.get("timePeriod")?.value=="PY"' class="form-group row mb-2">
               <label class="col-md-2 col-form-label"
-                     for="timePeriodId">Select Year</label>
+                     >Select Year</label>
               <div class="col-md-2" >
                 <mat-form-field formGroupName="taxYear" appearance="fill" >
                   <mat-label>Select Year</mat-label>
@@ -111,6 +114,8 @@
                     {{year}}
                   </mat-option>
                 </mat-select>
+                <mat-error>{{displayMessage.taxYear}}</mat-error>
+
               </mat-form-field>
                 
               </div>
@@ -125,7 +130,7 @@
               <div class="col-md-8">
                 <input class="form-control"
                        id="salaryAmountId"
-                       type="text"
+                       type="number"
                        placeholder="Salary Amount (required)"
                        formControlName="salaryAmount"
                        [ngClass]="{'is-invalid': displayMessage.salaryAmount }" />
@@ -137,10 +142,10 @@
 
             <div class="form-group row mb-2">
               <label class="col-md-2 col-form-label"
-                     for="salaryAmountId">Currency Code</label>
+                  >Currency Code</label>
               <div class="col-md-8">
                 <mat-form-field appearance="fill" >
-                  <mat-select  formControlName="currencyCode" >
+                  <mat-select formControlName="currencyCode" >
                     <mat-option>--</mat-option>
                     <mat-option *ngFor="let curr of currency" [value]="curr">
                       {{curr}}
@@ -169,22 +174,19 @@
                         [routerLink]="['/salary']">
                   Cancel
                 </button>
-
-                <button class="btn btn-outline-warning"
+                
+                <button *ngIf='id!=0' class="btn btn-outline-warning"
                         style="width:80px"
                         type="button"
                         title="Delete this product"
                         (click)="deleteSalary()">
                   Delete
                 </button>
+                
               </div>
             </div>
-            <!--br>Valid: {{ editForm.valid }}
-            <br>Value: {{ editForm.value | json }}
-            <div class="alert alert-danger"
-              *ngIf="errorMessage">{{errorMessage}}
-            </div-->
-
+            
+            
         
         </form>
     </div>
