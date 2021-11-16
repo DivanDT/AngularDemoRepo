@@ -1,4 +1,3 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { Salary } from '../models/salary.model';
 import { TimePeriod } from '../models/time-period.model';

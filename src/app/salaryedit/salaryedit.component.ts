@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChildren, ElementRef } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray, AbstractControl, FormControlName, FormBuilder } from '@angular/forms';
-import { DateAdapter } from '@angular/material/core';
+import { AfterViewInit, Component, OnInit, ViewChildren, ElementRef } from '@angular/core';
+import { FormGroup, Validators, FormControlName, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -119,16 +118,26 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       })
     })
 
-    //sets correct number of days for each month
+    //sets correct number of days for each month using Date.getDate()
     this.editForm.get('taxDate')?.get('month').valueChanges.subscribe(x => {
       this.setDaysInMonth(this.editForm.get('taxDate')?.get('year').value,x);
     })
+
+    //makes dropdown more robust
+    this.editForm.get('taxDate')?.get('year').valueChanges.subscribe(x => {
+      this.setDaysInMonth(x,this.editForm.get('taxDate')?.get('month').value);
+    })
     
   }
+
   setDaysInMonth(year: string, month: string){
+
+    //fixes day cannot be chosen if year is not chosen
     if(year==undefined){
-      //fixes day cannot be chosen if year is not chosen
       year = '2021'
+    }
+    if(month==undefined){
+      month = 'Jan'
     }
     //use currentDay so date is not lost
     let currentDay = this.editForm.get('taxDate').get('day').value
@@ -217,7 +226,7 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
         year: this.salary.taxDate?.year
       }
     });
-    
+
     this.doTimeVal(this.salary.timePeriod)
   }
 
