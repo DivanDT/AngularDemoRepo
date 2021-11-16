@@ -60,6 +60,7 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
         required: 'Currency Code Required'
     }
     }
+    //set functions for dropdown box dates
     this.dayPeriods = this.setDayPeriods();
     this.monthPeriods = this.setMonthPeriods();
     this.yearPeriods = this.setYearPeriods();
@@ -187,13 +188,16 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       this.pageTitle = `Edit Salary: ${this.salary.companyName}`;
     }
     let tempMonthValue: string;
+
+    //tempMonth for single dropdown box of taxMonth
     if(this.salary.timePeriod=='PM'){
       tempMonthValue = this.salary.taxMonth?.month+'-'+this.salary.taxMonth?.year.substr(2,2)
     }else {
+      //for validation
       tempMonthValue = undefined
     }
+
     // Update the data on the form
-    
     this.editForm.patchValue({
       companyName: this.salary.companyName,
       timePeriod: this.salary.timePeriod,
@@ -213,20 +217,16 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
         year: this.salary.taxDate?.year
       }
     });
-    this.doTimeVal(this.editForm.get('timePeriod').value)
+    
+    this.doTimeVal(this.salary.timePeriod)
   }
 
   saveSalary(): void {
     this.editForm.patchValue({
-
     })
-
-
-
     if (this.editForm.valid) {
       if (this.editForm.dirty) {
         const p = { ...this.salary, ...this.editForm.value };
-
         if (p.id === 0) {
           this.salaryService.createSalary(p)
             .subscribe({
@@ -309,10 +309,9 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
     return errorCount;
   }
 
+  //set functions for dropdown box dates
   setDayPeriods(): string[][]{
     let allPeriods: string[][];
-    
-    
     let months: string[] = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
     let years: string[] = []
     for (let index = 2022; index >= 2010; index--){
@@ -374,8 +373,6 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
     }
     //Per Month Validation
     if (tp=='PM') {
-      
-
       this.editForm.get('tempMonth').setValidators([Validators.required])
      
 
