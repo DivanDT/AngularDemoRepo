@@ -19,7 +19,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RouterModule.forRoot([
       {path: 'welcome',component: WelcomeComponent},
       {path: '',redirectTo: 'welcome',pathMatch: 'full'} ,
-      {path: '**',redirectTo: 'welcome',pathMatch: 'full'} 
+      {path: '**',redirectTo: 'welcome',pathMatch: 'full'}
     ]),
     SalaryModule,
     BrowserAnimationsModule

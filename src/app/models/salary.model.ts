@@ -15,6 +15,4 @@ export class Salary {
     taxMonth?: TaxMonth;
     taxYear?: TaxYear;
     
-    
-    
 }
