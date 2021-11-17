@@ -4,6 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription, fromEvent, merge } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Salary } from '../models/salary.model';
+import { TaxDate } from '../models/tax-date.model';
+import { TaxMonth } from '../models/tax-month.model';
+import { TaxYear } from '../models/tax-year.model';
 import { TimePeriod } from '../models/time-period.model';
 import { SalaryService } from '../salary/salary.service';
 @Component({
@@ -23,37 +26,56 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
   dayPeriods: string[][];
   monthPeriods: string[];
   yearPeriods: string[];
-  displayMessage: { [key: string]: string } = {};
+  displayMessage: { [key: string]: any } = {};
   testMessage: string = ' ';
   errorMessage: string;
   currency: string[] = ['ZAR','GBP','USD','CAD','EUR']
 
-  private validationMessages: { [key: string]: { [key: string]: string } };
-  
+  //private validationMessages: { [key: string]: { [key: string]: string } };
+  private validationMessages: { [key: string]: any };
   constructor(private fb: FormBuilder,private route: ActivatedRoute, private salaryService: SalaryService, private router: Router) {
     // Defines all of the validation messages for the form.
     this.validationMessages = {
       companyName: {
         required: 'Company Name Required',
-        minlength: 'Company Name Too Short',
-        maxlength: 'Company Name Too Long'
+        minlength: 'Company Name Too Short (Min Length: 2)',
+        maxlength: 'Company Name Too Long (Max Length: 100)'
     },
     timePeriod: {
         required: 'Time Period Required',
     },
-    taxDate: {
+    /*taxDate: {
+      
+      day: {
+        required: 'Day Required'
+      },
+      month: {
+        required: 'Month Required'
+      },
+      year: {
+        required: 'Year Required'
+      }
+
+    },*/
+    dateday: {
       required: 'Day Required'
+    },
+    datemonth: {
+      required: 'Month Required'
+    },
+    dateyear: {
+      required: 'Year Required'
     },
     tempMonth: {
         required: 'Month Required'
     },
-    taxYear: {
+    year: {
       required: 'Year Required'
     },
     salaryAmount: {
         required: 'Salary Required',
-        min: 'Below Minimum',
-        max: 'Above Maximum'
+        min: 'Below Minimum (Min value: 0.02)',
+        max: 'Above Maximum (Max value: 1000000'
     },
     currencyCode: {
         required: 'Currency Code Required'
@@ -80,22 +102,17 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       taxYear: this.fb.group({
         year: '',}
       ),
-      taxMonth: this.fb.group({
-        month: '',
-        year: '',}
-      ),
       tempMonth: ['',Validators.required],
       taxDate: this.fb.group({
-        year: '',
-        month: '',
-        day: ''}
+        dateyear: '',
+        datemonth: '',
+        dateday: ''}
       ),
       salaryAmount: [0,  [Validators.required,
                           Validators.min(0.01),
                           Validators.max(1000000)]],
       currencyCode: ['',Validators.required]
     });
-
 
     //Subscribing to parameter
     this.sub = this.route.paramMap.subscribe(
@@ -107,25 +124,15 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       }
     );
 
-   
-    //set month and day from 1 dropdown
-    this.editForm.get('tempMonth')?.valueChanges.subscribe(x => {
-      this.editForm.patchValue({
-        taxMonth:{
-          month: x?.substr(0,3),
-          year: '20'+x?.substr(4,2)
-        }
-      })
-    })
 
     //sets correct number of days for each month using Date.getDate()
-    this.editForm.get('taxDate')?.get('month').valueChanges.subscribe(x => {
-      this.setDaysInMonth(this.editForm.get('taxDate')?.get('year').value,x);
+    this.editForm.get('taxDate')?.get('datemonth').valueChanges.subscribe(x => {
+      this.setDaysInMonth(this.editForm.get('taxDate')?.get('dateyear').value,x);
     })
 
     //makes dropdown more robust
-    this.editForm.get('taxDate')?.get('year').valueChanges.subscribe(x => {
-      this.setDaysInMonth(x,this.editForm.get('taxDate')?.get('month').value);
+    this.editForm.get('taxDate')?.get('dateyear').valueChanges.subscribe(x => {
+      this.setDaysInMonth(x,this.editForm.get('taxDate')?.get('datemonth').value);
     })
     
   }
@@ -140,7 +147,7 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       month = 'Jan'
     }
     //use currentDay so date is not lost
-    let currentDay = this.editForm.get('taxDate').get('day').value
+    let currentDay = this.editForm.get('taxDate').get('dateday').value
     //get month index from month name
     let monthNum = this.dayPeriods[1].findIndex(x => x == month)
     //get number of days in specific month using getDate()
@@ -150,7 +157,7 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       days.push(numDays.toString())
     }
     this.dayPeriods[0] = days
-    this.editForm.get('taxDate').get('day').setValue(currentDay)
+    this.editForm.get('taxDate').get('dateday').setValue(currentDay)
   }
   
 
@@ -171,8 +178,6 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
     });
   }
   
- 
-
   
   getSalary(id: number): void {
     
@@ -181,7 +186,6 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
         next: (sal: Salary) => this.displaySalary(sal),
         error: err => this.errorMessage = err
       });
-
   }
 
   displaySalary(salary: Salary): void {
@@ -189,16 +193,17 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       this.editForm.reset();
     }
     this.salary = salary;
-    
 
+    //title
     if (this.salary.id === 0) {
       this.pageTitle = 'Add Salary';
+      //sets currency default to blank if creating new record
+      this.salary.currencyCode= '--';
     } else {
       this.pageTitle = `Edit Salary: ${this.salary.companyName}`;
     }
-    let tempMonthValue: string;
-
     //tempMonth for single dropdown box of taxMonth
+    let tempMonthValue: string;
     if(this.salary.timePeriod=='PM'){
       tempMonthValue = this.salary.taxMonth?.month+'-'+this.salary.taxMonth?.year.substr(2,2)
     }else {
@@ -215,18 +220,13 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       taxYear: {
         year: this.salary.taxYear?.year,
       },
-      taxMonth: {
-        month: this.salary.taxMonth?.month,
-        year: this.salary.taxMonth?.year
-      },
       tempMonth: tempMonthValue,
       taxDate: {
-        day: this.salary.taxDate?.day,
-        month: this.salary.taxDate?.month,
-        year: this.salary.taxDate?.year
+        dateday: this.salary.taxDate?.day,
+        datemonth: this.salary.taxDate?.month,
+        dateyear: this.salary.taxDate?.year
       }
     });
-
     this.doTimeVal(this.salary.timePeriod)
   }
 
@@ -235,7 +235,8 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
     })
     if (this.editForm.valid) {
       if (this.editForm.dirty) {
-        const p = { ...this.salary, ...this.editForm.value };
+        //const p: Salary = { ...this.salary, ...this.editForm.value };
+        const p: Salary = this.mapSalary();
         if (p.id === 0) {
           this.salaryService.createSalary(p)
             .subscribe({
@@ -256,6 +257,45 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       this.errorMessage = 'Please correct the validation errors.';
     }
   }
+
+  mapSalary(): Salary{
+
+    let tp = this.editForm.get('timePeriod').value
+
+    this.salary.companyName = this.editForm.get('companyName').value
+    this.salary.timePeriod = tp;
+    this.salary.salaryAmount = this.editForm.get('salaryAmount').value;
+    this.salary.currencyCode = this.editForm.get('currencyCode').value
+    
+    if (tp=='PD') {
+      let day: string = this.editForm.get('taxDate').get('dateday').value;
+      let month: string = this.editForm.get('taxDate').get('datemonth').value;
+      let year: string = this.editForm.get('taxDate').get('dateyear').value;
+      this.salary.taxDate = new TaxDate(day,month,year);
+      
+      this.salary.taxMonth = undefined;
+      this.salary.taxYear = undefined;
+    }
+    if (tp=='PM') {
+      let tempMonth: string = this.editForm.get('tempMonth').value;
+      let month: string = tempMonth.substr(0,3);
+      let year: string = '20'+tempMonth.substr(4,2);
+      this.salary.taxMonth = new TaxMonth(month,year)
+
+      this.salary.taxDate = undefined;
+      this.salary.taxYear = undefined;
+    }
+    if (tp=='PY') {
+      let year: string = this.editForm.get('taxYear').get('year').value
+      this.salary.taxYear = new TaxYear(year)
+
+      this.salary.taxDate = undefined;
+      this.salary.taxMonth = undefined;
+    }
+    return this.salary;
+  }
+
+  
 
   onSaveComplete(): void {
     // Reset the form to clear the flags
@@ -278,7 +318,13 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
     }
   }
 
+
   processMessages(container: FormGroup): { [key: string]: string } {
+
+    //fix spaces allowed
+    let cname: string = this.editForm.get('companyName').value
+    this.editForm.get('companyName').setValue(cname.trim())
+
     const messages:any = {};
     for (const controlKey in container.controls) {
       if (container.controls.hasOwnProperty(controlKey)) {
@@ -302,6 +348,7 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
         }
       }
     }
+    console.log(messages)
     return messages;
   }
 
@@ -368,16 +415,16 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
     
     //Per Day Validation
     if (tp=='PD') {
-      this.editForm.get('taxDate')?.get('day')?.setValidators([Validators.required])
-      this.editForm.get('taxDate')?.get('month')?.setValidators([Validators.required])
-      this.editForm.get('taxDate')?.get('year')?.setValidators([Validators.required])
+      this.editForm.get('taxDate')?.get('dateday')?.setValidators([Validators.required])
+      this.editForm.get('taxDate')?.get('datemonth')?.setValidators([Validators.required])
+      this.editForm.get('taxDate')?.get('dateyear')?.setValidators([Validators.required])
       this.editForm.get('taxDate')?.updateValueAndValidity();
       
       
       this.editForm.get('tempMonth')?.clearValidators();
       this.editForm.get('tempMonth')?.updateValueAndValidity();
 
-      this.editForm.get('taxYear')?.get('year')?.clearValidators();
+      this.editForm.get('taxYear')?.get('year')?.clearValidators()
       this.editForm.get('taxYear')?.get('year')?.updateValueAndValidity();
     }
     //Per Month Validation
@@ -385,30 +432,30 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       this.editForm.get('tempMonth').setValidators([Validators.required])
      
 
-      this.editForm.get('taxDate')?.get('day')?.clearValidators()
-      this.editForm.get('taxDate')?.get('day')?.updateValueAndValidity();
-      this.editForm.get('taxDate')?.get('month')?.clearValidators()
-      this.editForm.get('taxDate')?.get('month')?.updateValueAndValidity();
-      this.editForm.get('taxDate')?.get('year')?.clearValidators()
-      this.editForm.get('taxDate')?.get('year')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('dateday')?.clearValidators()
+      this.editForm.get('taxDate')?.get('dateday')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('datemonth')?.clearValidators()
+      this.editForm.get('taxDate')?.get('datemonth')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('dateyear')?.clearValidators()
+      this.editForm.get('taxDate')?.get('dateyear')?.updateValueAndValidity();
 
       this.editForm.get('taxYear')?.get('year')?.clearValidators()
       this.editForm.get('taxYear')?.get('year')?.updateValueAndValidity();
     }
-    //Per Day Validation
+    //Per Year Validation
     if (tp=='PY') {
       this.editForm.get('taxYear')?.get('year')?.setValidators([Validators.required])
-      this.editForm.get('taxYear')?.updateValueAndValidity();
+      this.editForm.get('taxYear')?.get('year')?.updateValueAndValidity();
       
       this.editForm.get('tempMonth')?.clearValidators();
       this.editForm.get('tempMonth')?.updateValueAndValidity();
 
-      this.editForm.get('taxDate')?.get('day')?.clearValidators()
-      this.editForm.get('taxDate')?.get('day')?.updateValueAndValidity();
-      this.editForm.get('taxDate')?.get('month')?.clearValidators()
-      this.editForm.get('taxDate')?.get('month')?.updateValueAndValidity();
-      this.editForm.get('taxDate')?.get('year')?.clearValidators()
-      this.editForm.get('taxDate')?.get('year')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('dateday')?.clearValidators()
+      this.editForm.get('taxDate')?.get('dateday')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('datemonth')?.clearValidators()
+      this.editForm.get('taxDate')?.get('datemonth')?.updateValueAndValidity();
+      this.editForm.get('taxDate')?.get('dateyear')?.clearValidators()
+      this.editForm.get('taxDate')?.get('dateyear')?.updateValueAndValidity();
     }
 
 

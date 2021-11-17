@@ -88,7 +88,7 @@ export class SalaryService {
 
   private initializeEmptySalary(): Salary{
     return {id: 0,
-            userId: 0,
+            userId: 22,
             companyName: '',
             timePeriod: TimePeriod.PerDay,
             salaryAmount: 0,

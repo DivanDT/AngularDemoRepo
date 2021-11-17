@@ -11,15 +11,17 @@
               <label class="col-md-2 col-form-label"
                      for="companyNameId">Company Name</label>
               <div class="col-md-8">
-                <input class="form-control"
+                <mat-form-field class = 'example-full-width'>
+                <input matInput
                        id="companyNameId"
                        type="text"
-                       placeholder="Company Name (required)"
                        formControlName="companyName"
                        [ngClass]="{'is-invalid': displayMessage.companyName }" />
-                <span class="invalid-feedback">
+                <mat-error>
                   {{displayMessage.companyName}}
-                </span>
+                </mat-error>
+                </mat-form-field>
+                
               </div>
             </div>
 
@@ -48,39 +50,37 @@
                 <mat-form-field formGroupName="taxDate" appearance="fill">
                   <!--day-->
                   <mat-label>Day</mat-label>
-                  <mat-select formControlName="day">
+                  <mat-select formControlName="dateday">
                     <mat-option *ngFor="let day of dayPeriods[0]" [value]="day">
                       {{day}}
                     </mat-option>
                   </mat-select>
-                  <mat-error>{{displayMessage.taxDate}}</mat-error>
+                  <mat-error>{{displayMessage.dateday}}</mat-error>
                 </mat-form-field>
               </div>
               <div class="col-md-3">
                   <!--month-->
                 <mat-form-field formGroupName="taxDate" appearance="fill">
                   <mat-label>Month</mat-label>
-                  <mat-select formControlName="month">
+                  <mat-select formControlName="datemonth">
                     <mat-option *ngFor="let month of dayPeriods[1]" [value]="month">
                       {{month}}
                     </mat-option>
                   </mat-select>
-                  <mat-error>{{displayMessage.taxDate}}</mat-error>
+                  <mat-error>{{displayMessage.datemonth}}</mat-error>
                 </mat-form-field>
               </div>
                   <!--year-->
               <div class="col-md-3">
                 <mat-form-field formGroupName="taxDate" appearance="fill">
                   <mat-label>Year</mat-label>
-                  <mat-select formControlName="year">
+                  <mat-select formControlName="dateyear">
                     <mat-option *ngFor="let year of dayPeriods[2]" [value]="year">
                       {{year}}
                     </mat-option>
                   </mat-select>
-                  <mat-error>{{displayMessage.taxDate}}</mat-error>
-
+                  <mat-error>{{displayMessage.dateyear}}</mat-error>
                 </mat-form-field>
-                
               </div>
             </div>
 
@@ -98,7 +98,6 @@
                 </mat-select>
                 <mat-error>{{displayMessage.tempMonth}}</mat-error>
               </mat-form-field>
-                
               </div>
             </div>
 
@@ -114,10 +113,8 @@
                     {{year}}
                   </mat-option>
                 </mat-select>
-                <mat-error>{{displayMessage.taxYear}}</mat-error>
-
+                <mat-error>{{displayMessage.year}}</mat-error>
               </mat-form-field>
-                
               </div>
             </div>
 
@@ -128,15 +125,16 @@
               <label class="col-md-2 col-form-label"
                      for="salaryAmountId">Salary Amount</label>
               <div class="col-md-8">
-                <input class="form-control"
+                <mat-form-field class = 'example-full-width'>
+                <input matInput
                        id="salaryAmountId"
                        type="number"
-                       placeholder="Salary Amount (required)"
                        formControlName="salaryAmount"
                        [ngClass]="{'is-invalid': displayMessage.salaryAmount }" />
-                <span class="invalid-feedback">
+                <mat-error>
                   {{displayMessage.salaryAmount}}
-                </span>
+                </mat-error>
+              </mat-form-field>
               </div>
             </div>
 
@@ -185,13 +183,8 @@
                 
               </div>
             </div>
-            
-            
         
         </form>
     </div>
-
-    
-
 </div>
 
