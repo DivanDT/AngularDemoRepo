@@ -44,19 +44,6 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
     timePeriod: {
         required: 'Time Period Required',
     },
-    /*taxDate: {
-      
-      day: {
-        required: 'Day Required'
-      },
-      month: {
-        required: 'Month Required'
-      },
-      year: {
-        required: 'Year Required'
-      }
-
-    },*/
     dateday: {
       required: 'Day Required'
     },
@@ -404,7 +391,6 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
     let yearPeriods: string[] = [];
     for (let year = 2022; year > 2010; year--) {
       let prevYear = year-1;
-      
       yearPeriods.push('Total for '+prevYear+'/'+year+ ' Tax Year')
 
     }
@@ -418,7 +404,7 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
       this.editForm.get('taxDate')?.get('dateday')?.setValidators([Validators.required])
       this.editForm.get('taxDate')?.get('datemonth')?.setValidators([Validators.required])
       this.editForm.get('taxDate')?.get('dateyear')?.setValidators([Validators.required])
-      this.editForm.get('taxDate')?.updateValueAndValidity();
+      //this.editForm.get('taxDate')?.updateValueAndValidity();
       
       
       this.editForm.get('tempMonth')?.clearValidators();
@@ -445,7 +431,7 @@ export class SalaryeditComponent implements OnInit, AfterViewInit {
     //Per Year Validation
     if (tp=='PY') {
       this.editForm.get('taxYear')?.get('year')?.setValidators([Validators.required])
-      this.editForm.get('taxYear')?.get('year')?.updateValueAndValidity();
+      //this.editForm.get('taxYear')?.get('year')?.updateValueAndValidity();
       
       this.editForm.get('tempMonth')?.clearValidators();
       this.editForm.get('tempMonth')?.updateValueAndValidity();
